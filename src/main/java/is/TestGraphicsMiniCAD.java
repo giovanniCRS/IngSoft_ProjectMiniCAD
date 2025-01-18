@@ -9,6 +9,11 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.Box;
+//import javax.swing.ButtonGroup;
 
 import is.command.HistoryCommandHandler;
 import is.shapes.view.GraphicObjectPanel;
@@ -26,8 +31,8 @@ public class TestGraphicsMiniCAD {
 
         // Toolbar con pulsanti Undo e Redo
         JToolBar toolbar = new JToolBar();
-        JButton undoButt = new JButton("Undo");
-        JButton redoButt = new JButton("Redo");  
+        JButton undoButt = new JButton("↩  Undo");
+        JButton redoButt = new JButton("Redo  ↪");  
 
         final HistoryCommandHandler handler = new HistoryCommandHandler();
 
@@ -66,6 +71,154 @@ public class TestGraphicsMiniCAD {
         JPanel commandPanel = new JPanel(new FlowLayout());
         commandPanel.add(commandInput);
         commandPanel.add(executeButton);
+
+        // Pulsante "Comandi" con menu popup
+        JButton commandsButton = new JButton("Comandi");
+        JPopupMenu commandsMenu = new JPopupMenu();
+
+        // Menu per "new"
+        JMenu newMenu = new JMenu("CREA");
+        JMenuItem newCircle = new JMenuItem("CERCHIO:           new circle <radius> <X> <Y>");
+        JMenuItem newRectangle = new JMenuItem("RETTANGOLO:  new rectangle <width> <height> <X> <Y>");
+        JMenuItem newImage = new JMenuItem("IMMAGINE:          new img \"src/is/shapes/model/NyaNya.gif\" <X> <Y>");
+
+        newCircle.addActionListener(evt -> commandInput.setText("new circle <radius> <X> <Y>"));
+        newRectangle.addActionListener(evt -> commandInput.setText("new rectangle <width> <height> <X> <Y>"));
+        newImage.addActionListener(evt -> commandInput.setText("new img \"src/is/shapes/model/NyaNya.gif\" <X> <Y>"));
+
+        newMenu.add(newCircle);
+        newMenu.add(newRectangle);
+        newMenu.add(newImage);
+
+        // Menu per "mv"
+        JMenu moveMenu = new JMenu("POSIZIONA");
+        JMenuItem moveItem = new JMenuItem("OGGETTO:  mv <id> <X> <Y>");
+        
+        moveItem.addActionListener(evt -> commandInput.setText("mv <id> <X> <Y>"));
+        
+        moveMenu.add(moveItem);
+
+        // Menu per "scale"
+        JMenu scaleMenu = new JMenu("RIDIMENSIONA");
+        JMenuItem scaleItem = new JMenuItem("OGGETTO:  scale <id> <factor>");
+
+        scaleItem.addActionListener(evt -> commandInput.setText("scale <id> <factor>"));
+
+        scaleMenu.add(scaleItem);
+
+        // Menu per "del"
+        JMenu deleteMenu = new JMenu("ELIMINA");
+        JMenuItem deleteItem = new JMenuItem("OGGETTO:  del <id>");
+
+        deleteItem.addActionListener(evt -> commandInput.setText("del <id>"));
+
+        deleteMenu.add(deleteItem);
+
+        // Menu per "mvoff"
+        JMenu moveOffsetMenu = new JMenu("SPOSTA");
+        JMenuItem moveOffsetItem = new JMenuItem("OGGETTO:  mvoff <id> <offsetX> <offsetY>");
+
+
+        moveOffsetItem.addActionListener(evt -> commandInput.setText("mvoff <id> <offsetX> <offsetY>"));
+
+        moveOffsetMenu.add(moveOffsetItem);
+
+        // Menu per "ls"
+        JMenu listMenu = new JMenu("VISUALIZZA");
+        JMenuItem listItem = new JMenuItem("OGGETTO:       ls <id>");
+        JMenuItem listAll = new JMenuItem("TUTTO:             ls all");
+        JMenuItem listCircle = new JMenuItem("CERCHI:            ls circle");
+        JMenuItem listRectangle = new JMenuItem("RETTANGOLI:  ls rectangle");
+        JMenuItem listImage = new JMenuItem("IMMAGINI:         ls image");
+        JMenuItem listGroups = new JMenuItem("GRUPPI:            ls groups");
+
+        listAll.addActionListener(evt -> commandInput.setText("ls all"));
+        listItem.addActionListener(evt -> commandInput.setText("ls <id>"));
+        listCircle.addActionListener(evt -> commandInput.setText("ls circle"));
+        listRectangle.addActionListener(evt -> commandInput.setText("ls rectangle"));
+        listImage.addActionListener(evt -> commandInput.setText("ls image"));
+        listGroups.addActionListener(evt -> commandInput.setText("ls groups"));
+
+        listMenu.add(listItem);
+        listMenu.add(listAll);
+        listMenu.add(listCircle);
+        listMenu.add(listRectangle);
+        listMenu.add(listImage);
+        listMenu.add(listGroups);
+
+        // Menu per "grp"
+        JMenu groupMenu = new JMenu("CREA GRUPPO");
+        JMenuItem groupItem = new JMenuItem("RAGGRUPPA:  grp <id1>, <id2>, ...");
+
+        groupItem.addActionListener(evt -> commandInput.setText("grp <id1>, <id2>, ..."));
+
+        groupMenu.add(groupItem);
+
+        // Menu per "ungrp"
+        JMenu ungroupMenu = new JMenu("SCIOGLI GRUPPO");
+        JMenuItem ungroupItem = new JMenuItem("SCOMPATTA:  ungrp <groupId>");
+
+        ungroupItem.addActionListener(evt -> commandInput.setText("ungrp <groupId>"));
+
+        ungroupMenu.add(ungroupItem);
+
+        // Menu per "area"
+        JMenu areaMenu = new JMenu("CALCOLA AREA");
+        JMenuItem areaItem = new JMenuItem("OGGETTO:       area <id>"); 
+        JMenuItem areaAll = new JMenuItem("TUTTI:               area all");
+        JMenuItem areaCircle = new JMenuItem("CERCHI:            area circle");
+        JMenuItem areaRectangle = new JMenuItem("RETTANGOLI:  area rectangle");
+        JMenuItem areaImage = new JMenuItem("IMMAGINI:         area image");
+
+        areaItem.addActionListener(evt -> commandInput.setText("area <id>")); 
+        areaAll.addActionListener(evt -> commandInput.setText("area all"));
+        areaCircle.addActionListener(evt -> commandInput.setText("area circle"));
+        areaRectangle.addActionListener(evt -> commandInput.setText("area rectangle"));
+        areaImage.addActionListener(evt -> commandInput.setText("area image"));
+
+        areaMenu.add(areaItem);
+        areaMenu.add(areaAll);
+        areaMenu.add(areaCircle);
+        areaMenu.add(areaRectangle);
+        areaMenu.add(areaImage);
+
+        // Menu per "perimeter"
+        JMenu perimeterMenu = new JMenu("CALCOLA PERIMETRO");
+        JMenuItem perimeterItem = new JMenuItem("OGGETTO:       perimeter <id>");
+        JMenuItem perimeterAll = new JMenuItem("TUTTI:               perimeter all");
+        JMenuItem perimeterCircle = new JMenuItem("CERCHI:            perimeter circle");
+        JMenuItem perimeterRectangle = new JMenuItem("RETTANGOLI:  perimeter rectangle");
+        JMenuItem perimeterImage = new JMenuItem("IMMAGINI:         perimeter image");
+
+        perimeterItem.addActionListener(evt -> commandInput.setText("perimeter <id>"));
+        perimeterAll.addActionListener(evt -> commandInput.setText("perimeter all"));
+        perimeterCircle.addActionListener(evt -> commandInput.setText("perimeter circle"));
+        perimeterRectangle.addActionListener(evt -> commandInput.setText("perimeter rectangle"));
+        perimeterImage.addActionListener(evt -> commandInput.setText("perimeter image"));
+
+        perimeterMenu.add(perimeterItem);
+        perimeterMenu.add(perimeterAll);
+        perimeterMenu.add(perimeterCircle);
+        perimeterMenu.add(perimeterRectangle);
+        perimeterMenu.add(perimeterImage);
+
+        // Aggiunta al menu
+        commandsMenu.add(newMenu);
+        commandsMenu.add(moveMenu);
+        commandsMenu.add(moveOffsetMenu);
+        commandsMenu.add(scaleMenu);
+        commandsMenu.add(deleteMenu);
+        commandsMenu.add(listMenu);
+        commandsMenu.add(groupMenu);
+        commandsMenu.add(ungroupMenu);
+        commandsMenu.add(areaMenu);
+        commandsMenu.add(perimeterMenu);
+
+        commandsButton.addActionListener(evt -> commandsMenu.show(commandsButton, commandsButton.getWidth() - commandsMenu.getPreferredSize().width, commandsButton.getHeight()));
+
+        // Comandi sulla destra
+        toolbar.add(Box.createHorizontalGlue());
+        toolbar.add(commandsButton); 
 
         // Layout della finestra principale
         f.add(toolbar, BorderLayout.NORTH);
