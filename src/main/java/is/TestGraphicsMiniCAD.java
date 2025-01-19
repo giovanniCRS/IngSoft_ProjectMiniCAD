@@ -12,6 +12,7 @@ import javax.swing.JToolBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButton;
 import javax.swing.Box;
 //import javax.swing.ButtonGroup;
 
@@ -23,6 +24,8 @@ import is.shapes.view.CircleObjectView;
 import is.shapes.view.RectangleObjectView;
 import is.shapes.view.ImageObjectView;
 import is.shapes.controller.MiniCADInterpreter;
+import is.shapes.specificstrategy.DarkTheme;
+import is.shapes.specificstrategy.LightTheme;
 
 public class TestGraphicsMiniCAD {
 
@@ -71,6 +74,29 @@ public class TestGraphicsMiniCAD {
         JPanel commandPanel = new JPanel(new FlowLayout());
         commandPanel.add(commandInput);
         commandPanel.add(executeButton);
+
+        // Griglia
+        JRadioButton grid = new JRadioButton("Griglia");
+        grid.addActionListener(evt -> gpanel.toggleGrid());
+        toolbar.add(grid);  
+
+        // tema
+        JRadioButton darkModeToggle = new JRadioButton("Modalità Scura");
+
+        // Tema di default: chiaro
+        darkModeToggle.setSelected(false);
+        
+        // Aggiungi l'azione per il toggle del tema
+        darkModeToggle.addActionListener(evt -> {
+            if (darkModeToggle.isSelected()) {
+                gpanel.setTheme(new DarkTheme()); // Applica tema scuro
+            } else {
+                gpanel.setTheme(new LightTheme()); // Applica tema chiaro
+            }
+        });
+        
+        // Aggiungi il pulsante alla toolbar
+        toolbar.add(darkModeToggle);
 
         // Pulsante "Comandi" con menu popup
         JButton commandsButton = new JButton("Comandi");

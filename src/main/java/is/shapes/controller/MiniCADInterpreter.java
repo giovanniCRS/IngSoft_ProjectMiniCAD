@@ -120,7 +120,7 @@ public class MiniCADInterpreter {
     }
 
     private Command createNewObjectCommand(StreamTokenizer tokenizer) throws Exception {
-        tokenizer.nextToken(); // Tipo
+        tokenizer.nextToken(); // Tipo di oggetto (es. "circle")
         if (tokenizer.ttype != StreamTokenizer.TT_WORD) {
             throw new Exception("Tipo di oggetto non valido per il comando 'new'");
         }
@@ -183,8 +183,8 @@ public class MiniCADInterpreter {
                 return new NewObjectCmdWithID(gpanel, rectangle, id);
     
             case "img":
-                tokenizer.nextToken(); // Percorso file
-                if (tokenizer.ttype == '"') { 
+                tokenizer.nextToken(); 
+                if (tokenizer.ttype == '"') {
                     tokenizer.pushBack(); 
                     tokenizer.quoteChar('"'); 
                     tokenizer.nextToken(); 
@@ -223,7 +223,7 @@ public class MiniCADInterpreter {
         if (tokenizer.ttype != StreamTokenizer.TT_WORD) {
             throw new Exception("Errore nel comando 'mv': ID non valido o mancante.");
         }
-        String id = tokenizer.sval; //ID come stringa
+        String id = tokenizer.sval; 
     
         // Leggi il secondo token: X
         tokenizer.nextToken();
@@ -239,16 +239,18 @@ public class MiniCADInterpreter {
         }
         double newY = tokenizer.nval;
     
+        // Verifica che esista un oggetto con l'ID specificato
         GraphicObject object = gpanel.getObjectById(id);
         if (object == null) {
             throw new Exception("Oggetto con ID '" + id + "' non trovato.");
         }
     
+        // Crea il comando per spostare l'oggetto
         return new MoveCommand(object, new Point2D.Double(newX, newY));
     }
 
     private Command createMoveOffsetCommand(StreamTokenizer tokenizer) throws Exception {
-        // Leggi l'ID dell'oggetto
+
         tokenizer.nextToken();
         if (tokenizer.ttype != StreamTokenizer.TT_WORD) {
             throw new Exception("Errore nel comando 'mvoff': ID non valido o mancante");
@@ -269,52 +271,48 @@ public class MiniCADInterpreter {
         }
         double offsetY = tokenizer.nval;
     
-        // Recupera l'oggetto dal pannello
         GraphicObject object = gpanel.getObjectById(id);
         if (object == null) {
             throw new Exception("Oggetto con ID '" + id + "' non trovato");
         }
     
-        // Crea e restituisce il comando di spostamento con offset
         return new MoveOffsetCommand(object, offsetX, offsetY);
     }
 
     private Command createScaleCommand(StreamTokenizer tokenizer) throws Exception {
-        // Leggi l'ID dell'oggetto
         tokenizer.nextToken();
         if (tokenizer.ttype != StreamTokenizer.TT_WORD) {
             throw new Exception("Errore nel comando 'scale': ID non valido o mancante");
         }
         String id = tokenizer.sval;
     
-        // Leggi il fattore di scala
+       
         tokenizer.nextToken();
         if (tokenizer.ttype != StreamTokenizer.TT_NUMBER) {
             throw new Exception("Errore nel comando 'scale': fattore di scala non valido");
         }
         double factor = tokenizer.nval;
     
-        // Recupera l'oggetto dal pannello
+       
         GraphicObject object = gpanel.getObjectById(id);
         if (object == null) {
             throw new Exception("Oggetto con ID '" + id + "' non trovato");
         }
     
-        // Crea e restituisce il comando di scala
         return new ZoomCommand(object, factor);
     }
 
     private Command createDeleteCommand(StreamTokenizer tokenizer) throws Exception {
-        tokenizer.nextToken(); // Leggi l'ID dell'oggetto da eliminare
+        tokenizer.nextToken(); 
         String id = readWord(tokenizer, "ID dell'oggetto");
     
-        // Recupera l'oggetto dal pannello
+        
         GraphicObject object = gpanel.getObjectById(id);
         if (object == null) {
             throw new Exception("Oggetto con ID '" + id + "' non trovato");
         }
     
-        // Crea il comando di eliminazione
+       
         return new DeleteCommand(gpanel, object, id);
     }
 
@@ -325,12 +323,12 @@ public class MiniCADInterpreter {
     }
 
     private Command createGroupCommand(StreamTokenizer tokenizer) throws Exception {
-        List<String> ids = new ArrayList<>(); // Lista degli ID
+        List<String> ids = new ArrayList<>();
     
-        // Leggi tutti i token fino alla fine della riga
+        // Leggi tutti i token fino alla fine
         while (tokenizer.nextToken() != StreamTokenizer.TT_EOF) {
             if (tokenizer.ttype == StreamTokenizer.TT_WORD) {
-                // Dividi il token per virgole e aggiungi gli ID
+                // dividi il token cpon virgole e aggiungi gli ID
                 String[] idParts = tokenizer.sval.split(",");
                 for (String id : idParts) {
                     String trimmedId = id.trim();
@@ -361,13 +359,16 @@ public class MiniCADInterpreter {
 
     private Command createUngroupCommand(StreamTokenizer tokenizer) throws Exception {
         tokenizer.nextToken();
+        
         String groupId = readWord(tokenizer, "ID del gruppo");
+    
     
         GraphicObject group = gpanel.getObjectById(groupId);
         if (group == null || !(group instanceof GroupObject)) {
             throw new Exception("Gruppo con ID '" + groupId + "' non trovato o non valido");
         }
     
+
         return new UngroupCommand(gpanel, group);
     }
 

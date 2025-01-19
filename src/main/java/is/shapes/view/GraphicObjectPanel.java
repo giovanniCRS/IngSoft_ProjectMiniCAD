@@ -7,6 +7,8 @@ import is.shapes.model.GraphicObjectListener;
 import is.shapes.model.GroupObject;
 import is.shapes.model.ImageObject;
 import is.shapes.model.RectangleObject;
+import is.shapes.specificstrategy.LightTheme;
+import is.strategy.ThemeStrategy;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -34,11 +36,22 @@ public class GraphicObjectPanel extends JComponent implements GraphicObjectListe
 	 */
 
 	private final List<GraphicObject> objects = new LinkedList<>();
- 
+
+	// griglia
+	private boolean showGrid = false;
+
+	// tema
+    private ThemeStrategy theme = new LightTheme();
+
+    public void setTheme(ThemeStrategy theme) {
+        this.theme = theme;
+        repaint(); // Aggiorna il pannello
+    }
+/* 
 	public GraphicObjectPanel() {
 		setBackground(Color.WHITE);
 	}
-
+*/
 	@Override
 	public void graphicChanged(GraphicEvent e) {
 		repaint();
@@ -70,12 +83,34 @@ public class GraphicObjectPanel extends JComponent implements GraphicObjectListe
 		}
 		return new Dimension((int) x, (int) y);
 	}
+/* 
+	@Override
+	protected void paintComponent(Graphics g) {
 
+		super.paintComponent(g);
+
+		Graphics2D g2 = (Graphics2D) g;
+		Color originalColor = g2.getColor();
+
+		// griglia
+		if (showGrid) {
+            drawGrid(g2);
+        }
+
+		g2.setColor(originalColor);
+
+		for (GraphicObject go : objects) {
+			GraphicObjectView view = GraphicObjectViewFactory.FACTORY.createView(go);
+			view.drawGraphicObject(go, g2);
+		}
+
+	}
+*/	
 	public void add(GraphicObject go) {
 		objects.add(go);
 		go.addGraphicObjectListener(this);
 		repaint();
-	}
+	}//add del corso
 
 	public void remove(GraphicObject go) {
 		if (objects.remove(go)) {
@@ -83,9 +118,9 @@ public class GraphicObjectPanel extends JComponent implements GraphicObjectListe
 			go.removeGraphicObjectListener(this);
 		}
 
-	}
+	}//remove del corso
 	
-	/* -------------------------------------------Aggiunte------------------------------------------------- */ 
+	/* -------------------------------------------Modifiche mie------------------------------------------------- */ 
 
 	// Mappa ID-oggetto
 	private final Map<String, GraphicObject> objectMap = new HashMap<>(); 
@@ -164,7 +199,7 @@ public class GraphicObjectPanel extends JComponent implements GraphicObjectListe
 				}
 				break;
 	
-			default: 
+			default: // Ricerca di un oggetto specifico tramite ID
 				GraphicObject go = getObjectById(target);
 				if (go != null) {
 					printObjectDetails(go);
@@ -198,7 +233,7 @@ public class GraphicObjectPanel extends JComponent implements GraphicObjectListe
 					image.getPosition().getX(), image.getPosition().getY());
 		} else if (go instanceof GroupObject) {
 			GroupObject group = (GroupObject) go;
-			int totalMembers = countGroupMembers(group); // Conta tutti i membri ricorsivamente
+			int totalMembers = countGroupMembers(group); // Conta tutti i membri, ricorsivamente
 			System.out.printf("- Group: ID=%s, members=%d->[%s]%n", 
 				id, 
 				totalMembers, 
@@ -213,7 +248,7 @@ public class GraphicObjectPanel extends JComponent implements GraphicObjectListe
 		int count = 0;
 		for (GraphicObject member : group.getMembers()) {
 			if (member instanceof GroupObject) {
-				count += countGroupMembers((GroupObject) member); 
+				count += countGroupMembers((GroupObject) member); // Conta ricorsivamente
 			} else {
 				count++;
 			}
@@ -248,16 +283,18 @@ public class GraphicObjectPanel extends JComponent implements GraphicObjectListe
 		Set<String> memberIds = new HashSet<>(); // Per evitare duplicati
 		collectMemberIds(group, memberIds);
 	
+		// Converti gli ID in una stringa separata da virgole
 		return String.join(", ", memberIds);
 	}
 	
-	// Metodo ricorsivo per raccogliere gli ID di tutti i membri e gruppi annidati
+	// Metodo ricorsivo per raccogliere gli ID di tutti i membri, incluso gruppi nidificati
 	private void collectMemberIds(GroupObject group, Set<String> memberIds) {
 		for (GraphicObject member : group.getMembers()) {
 			if (member instanceof GroupObject) {
-				// Chiamata ricorsiva per gruppi annidati
+				// Chiamata ricorsiva per gruppi nidificati
 				collectMemberIds((GroupObject) member, memberIds);
 			} else {
+				// Aggiungi l'ID del membro
 				String id = getObjectId(member);
 				if (id != null) {
 					memberIds.add(id);
@@ -378,14 +415,57 @@ public class GraphicObjectPanel extends JComponent implements GraphicObjectListe
 		}
 	}
 
-	// disegna oggetti
+	// griglia (altri pezzi a inizio codice)
+	private void drawGrid(Graphics2D g2) {
+		int width = getWidth();
+		int height = getHeight();
+		int gridSize = 50; 
+	
+		Color gridColor = theme.getGridColor();  // Colore della griglia dal tema
+		Color textColor = theme.getTextColor(); // Colore dei numeri dal tema
+	
+		// Griglia
+		g2.setColor(gridColor); 
+		for (int x = 0; x <= width; x += gridSize) {
+			g2.drawLine(x, 0, x, height); // Linee verticali
+			g2.setColor(textColor); 
+			g2.drawString(String.valueOf(x), x + 2, 12); // Numeri sopra la griglia
+			g2.setColor(gridColor); 
+		}
+	
+		for (int y = 0; y <= height; y += gridSize) {
+			g2.drawLine(0, y, width, y); // Linee orizzontali
+			g2.setColor(textColor); 
+			g2.drawString(String.valueOf(y), 2, y - 2); // Numeri accanto alla griglia
+			g2.setColor(gridColor); 
+		}
+	}
+
+    public void toggleGrid() {
+        showGrid = !showGrid;
+        repaint();
+    }
+
+	// tema (altri pezzi a inizio codice)
 	@Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
 
+        // Sfondo
+        setBackground(theme.getBackgroundColor());
+        g2.setColor(theme.getBackgroundColor());
+        g2.fillRect(0, 0, getWidth(), getHeight());
+
+        // Griglia
+        if (showGrid) {
+            drawGrid(g2);
+        }
+
+        // Disegna oggetti
         for (GraphicObject go : objects) {
+            g2.setColor(theme.getShapeColor());
             GraphicObjectView view = GraphicObjectViewFactory.FACTORY.createView(go);
             view.drawGraphicObject(go, g2);
         }
