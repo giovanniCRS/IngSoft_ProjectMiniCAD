@@ -1,12 +1,13 @@
 package is.shapes.controller;
+import is.builder.GraphicObjectDirector;
 import is.command.Command;
 import is.command.CommandHandler;
 import is.command.HistoryCommandHandler;
-import is.shapes.model.CircleObject;
+//import is.shapes.model.CircleObject;
 import is.shapes.model.GraphicObject;
 import is.shapes.model.GroupObject;
-import is.shapes.model.ImageObject;
-import is.shapes.model.RectangleObject;
+//import is.shapes.model.ImageObject;
+//import is.shapes.model.RectangleObject;
 import is.shapes.view.GraphicObjectLogger;
 import is.shapes.view.GraphicObjectPanel;
 import is.shapes.specificcommand.AreaCommand;
@@ -124,11 +125,12 @@ public class MiniCADInterpreter {
         if (tokenizer.ttype != StreamTokenizer.TT_WORD) {
             throw new Exception("Tipo di oggetto non valido per il comando 'new'");
         }
-    
+
         String type = tokenizer.sval.toLowerCase();
-        
         String id = generaId("obj");
-    
+        GraphicObjectDirector director = new GraphicObjectDirector();
+        GraphicObject createdObject;
+
         switch (type) {
             case "circle":
                 tokenizer.nextToken(); // Raggio
@@ -136,85 +138,84 @@ public class MiniCADInterpreter {
                     throw new Exception("Valore non valido per il raggio");
                 }
                 double radius = tokenizer.nval;
-    
+
                 tokenizer.nextToken(); // Coordinata X
                 if (tokenizer.ttype != StreamTokenizer.TT_NUMBER) {
                     throw new Exception("Valore non valido per X");
                 }
                 double x = tokenizer.nval;
-    
+
                 tokenizer.nextToken(); // Coordinata Y
                 if (tokenizer.ttype != StreamTokenizer.TT_NUMBER) {
                     throw new Exception("Valore non valido per Y");
                 }
                 double y = tokenizer.nval;
-    
-                GraphicObject circle = new CircleObject(new Point2D.Double(x, y), radius);
-                circle.addGraphicObjectListener(logger);
-                return new NewObjectCmdWithID(gpanel, circle, id);
-    
+
+                // Usa il Director per creare l'oggetto
+                createdObject = director.createCircle(x, y, radius);
+                break;
+
             case "rectangle":
                 tokenizer.nextToken(); // Larghezza
                 if (tokenizer.ttype != StreamTokenizer.TT_NUMBER) {
                     throw new Exception("Valore non valido per la larghezza");
                 }
                 double width = tokenizer.nval;
-    
+
                 tokenizer.nextToken(); // Altezza
                 if (tokenizer.ttype != StreamTokenizer.TT_NUMBER) {
                     throw new Exception("Valore non valido per l'altezza");
                 }
                 double height = tokenizer.nval;
-    
+
                 tokenizer.nextToken(); // Coordinata X
                 if (tokenizer.ttype != StreamTokenizer.TT_NUMBER) {
                     throw new Exception("Valore non valido per X");
                 }
                 x = tokenizer.nval;
-    
+
                 tokenizer.nextToken(); // Coordinata Y
                 if (tokenizer.ttype != StreamTokenizer.TT_NUMBER) {
                     throw new Exception("Valore non valido per Y");
                 }
                 y = tokenizer.nval;
-    
-                GraphicObject rectangle = new RectangleObject(new Point2D.Double(x, y), width, height);
-                rectangle.addGraphicObjectListener(logger);
-                return new NewObjectCmdWithID(gpanel, rectangle, id);
-    
+
+                // Usa il Director per creare l'oggetto
+                createdObject = director.createRectangle(x, y, width, height);
+                break;
+
             case "img":
-                tokenizer.nextToken(); 
-                if (tokenizer.ttype == '"') {
-                    tokenizer.pushBack(); 
-                    tokenizer.quoteChar('"'); 
-                    tokenizer.nextToken(); 
-                }
-            
+                tokenizer.nextToken(); // Percorso file
                 if (tokenizer.ttype != StreamTokenizer.TT_WORD && tokenizer.ttype != '"') {
                     throw new Exception("Percorso immagine non valido o mancante. Usa virgolette se contiene spazi.");
                 }
-            
                 String filePath = tokenizer.sval;
-            
+
                 tokenizer.nextToken(); // Coordinata X
                 if (tokenizer.ttype != StreamTokenizer.TT_NUMBER) {
                     throw new Exception("Valore non valido per X");
                 }
                 x = tokenizer.nval;
-            
+
                 tokenizer.nextToken(); // Coordinata Y
                 if (tokenizer.ttype != StreamTokenizer.TT_NUMBER) {
                     throw new Exception("Valore non valido per Y");
                 }
                 y = tokenizer.nval;
-            
-                GraphicObject image = new ImageObject(new javax.swing.ImageIcon(filePath), new Point2D.Double(x, y));
-                image.addGraphicObjectListener(logger);
-                return new NewObjectCmdWithID(gpanel, image, id);
-    
+
+                // Usa il Director per creare l'oggetto
+                createdObject = director.createImage(x, y, new javax.swing.ImageIcon(filePath));
+                break;
+
             default:
                 throw new Exception("Tipo di oggetto '" + type + "' non riconosciuto per il comando 'new'");
         }
+
+        // Aggiungi il logger all'oggetto appena creato
+        createdObject.addGraphicObjectListener(logger);
+
+        // Crea e restituisci il comando
+        return new NewObjectCmdWithID(gpanel, createdObject, id);
     }
 
     private Command createMoveCommand(StreamTokenizer tokenizer) throws Exception {
@@ -223,7 +224,7 @@ public class MiniCADInterpreter {
         if (tokenizer.ttype != StreamTokenizer.TT_WORD) {
             throw new Exception("Errore nel comando 'mv': ID non valido o mancante.");
         }
-        String id = tokenizer.sval; 
+        String id = tokenizer.sval; // Recupera l'ID come stringa
     
         // Leggi il secondo token: X
         tokenizer.nextToken();
@@ -250,7 +251,7 @@ public class MiniCADInterpreter {
     }
 
     private Command createMoveOffsetCommand(StreamTokenizer tokenizer) throws Exception {
-
+        // Leggi l'ID dell'oggetto
         tokenizer.nextToken();
         if (tokenizer.ttype != StreamTokenizer.TT_WORD) {
             throw new Exception("Errore nel comando 'mvoff': ID non valido o mancante");
@@ -271,48 +272,52 @@ public class MiniCADInterpreter {
         }
         double offsetY = tokenizer.nval;
     
+        // Recupera l'oggetto dal pannello
         GraphicObject object = gpanel.getObjectById(id);
         if (object == null) {
             throw new Exception("Oggetto con ID '" + id + "' non trovato");
         }
     
+        // Crea e restituisce il comando di spostamento con offset
         return new MoveOffsetCommand(object, offsetX, offsetY);
     }
 
     private Command createScaleCommand(StreamTokenizer tokenizer) throws Exception {
+        // Leggi l'ID dell'oggetto
         tokenizer.nextToken();
         if (tokenizer.ttype != StreamTokenizer.TT_WORD) {
             throw new Exception("Errore nel comando 'scale': ID non valido o mancante");
         }
         String id = tokenizer.sval;
     
-       
+        // Leggi il fattore di scala
         tokenizer.nextToken();
         if (tokenizer.ttype != StreamTokenizer.TT_NUMBER) {
             throw new Exception("Errore nel comando 'scale': fattore di scala non valido");
         }
         double factor = tokenizer.nval;
     
-       
+        // Recupera l'oggetto dal pannello
         GraphicObject object = gpanel.getObjectById(id);
         if (object == null) {
             throw new Exception("Oggetto con ID '" + id + "' non trovato");
         }
     
+        // Crea e restituisce il comando di scala
         return new ZoomCommand(object, factor);
     }
 
     private Command createDeleteCommand(StreamTokenizer tokenizer) throws Exception {
-        tokenizer.nextToken(); 
+        tokenizer.nextToken(); // Leggi l'ID dell'oggetto da eliminare
         String id = readWord(tokenizer, "ID dell'oggetto");
     
-        
+        // Recupera l'oggetto dal pannello
         GraphicObject object = gpanel.getObjectById(id);
         if (object == null) {
             throw new Exception("Oggetto con ID '" + id + "' non trovato");
         }
     
-       
+        // Crea il comando di eliminazione
         return new DeleteCommand(gpanel, object, id);
     }
 
@@ -323,12 +328,12 @@ public class MiniCADInterpreter {
     }
 
     private Command createGroupCommand(StreamTokenizer tokenizer) throws Exception {
-        List<String> ids = new ArrayList<>();
+        List<String> ids = new ArrayList<>(); // Lista degli ID
     
-        // Leggi tutti i token fino alla fine
+        // Leggi tutti i token fino alla fine della riga
         while (tokenizer.nextToken() != StreamTokenizer.TT_EOF) {
             if (tokenizer.ttype == StreamTokenizer.TT_WORD) {
-                // dividi il token cpon virgole e aggiungi gli ID
+                // Dividi il token per virgole e aggiungi gli ID
                 String[] idParts = tokenizer.sval.split(",");
                 for (String id : idParts) {
                     String trimmedId = id.trim();
@@ -343,6 +348,7 @@ public class MiniCADInterpreter {
             throw new Exception("Il comando 'grp' richiede almeno 2 ID");
         }
     
+        // Recupera gli oggetti corrispondenti agli ID
         List<GraphicObject> objects = new ArrayList<>();
         for (String id : ids) {
             GraphicObject object = gpanel.getObjectById(id);
@@ -352,23 +358,34 @@ public class MiniCADInterpreter {
             objects.add(object);
         }
     
+        // Genera un nuovo ID per il gruppo
         String groupId = generaId("grp");
     
+        // crea il director
+        GraphicObjectDirector director = new GraphicObjectDirector();
+
+        // Crea il gruppo
+        GraphicObject group = director.createGroup(objects);
+
+        // Aggiungi il logger al gruppo creato
+        group.addGraphicObjectListener(logger);
+
+        // Crea e restituisci il comando
         return new GroupCommand(gpanel, objects, groupId);
     }
 
     private Command createUngroupCommand(StreamTokenizer tokenizer) throws Exception {
         tokenizer.nextToken();
-        
+        // Leggi l'ID del gruppo da sciogliere
         String groupId = readWord(tokenizer, "ID del gruppo");
     
-    
+        // Recupera il gruppo dal pannello
         GraphicObject group = gpanel.getObjectById(groupId);
         if (group == null || !(group instanceof GroupObject)) {
             throw new Exception("Gruppo con ID '" + groupId + "' non trovato o non valido");
         }
     
-
+        // Crea e restituisce il comando di scioglimento del gruppo
         return new UngroupCommand(gpanel, group);
     }
 
