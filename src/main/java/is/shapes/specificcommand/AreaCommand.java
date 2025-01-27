@@ -15,12 +15,13 @@ public class AreaCommand implements Command {
     @Override
 public boolean doIt() {
     double area = panel.calculateArea(target);
-    System.out.println("Area totale per il target '" + target + "': " + area);
+    System.out.printf("[Area] richiesta per '%s': %s.%n", target, area);
     return true;
 }
 
     @Override
     public boolean undoIt() {
+        System.out.printf("Errore: Impossibile annullare la stampa su terminale dell'area richiesta per '%s'. L'operazione è irreversibile.%n", target);
         return false; // Area non è reversibile
     }
 }

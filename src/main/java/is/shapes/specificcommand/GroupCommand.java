@@ -22,12 +22,12 @@ public class GroupCommand implements Command {
     public boolean doIt() {
         // Controlla se l'ID del gruppo è già usato
         if (panel.getObjectById(groupId) != null) {
-            System.err.println("Errore: ID già esistente: " + groupId);
+            System.err.printf("Errore: ID '%s' già esistente.%n", groupId);
             return false;
         }
         group = new GroupObject(objects); // Crea il gruppo
         panel.add(groupId, group); // Aggiungi il gruppo al pannello con il suo ID
-        System.out.printf("[Gruppo] creato con ID: %s%n", groupId);
+        System.out.printf("[Gruppo] formato con ID: %s.%n", groupId);
         return true;
     }
 
@@ -35,7 +35,7 @@ public class GroupCommand implements Command {
     public boolean undoIt() {
         if (group != null) {
             panel.remove(groupId); // Rimuovi il gruppo dal pannello
-            System.out.printf("Gruppo con ID %s rimosso.%n", groupId);
+            System.out.printf("[Gruppo] sciolto con ID: %s.%n", groupId);
             return true;
         }
         return false;

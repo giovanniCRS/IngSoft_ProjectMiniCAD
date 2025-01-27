@@ -18,13 +18,14 @@ public class NewObjectCmdWithID implements Command {
 
     @Override
     public boolean doIt() {
-        System.out.println(String.format("[%s] creato con ID: %s", go.getType(), id));
+        System.out.printf("[%s] creato con ID: %s.%n", go.getType(), id);
         panel.add(id, go); // Aggiunge l'oggetto con ID
         return true;
     }
 
     @Override
     public boolean undoIt() {
+        System.out.printf("[%s] rimosso con ID: %s.%n", go.getType(), id);
         panel.remove(id); // Rimuove l'oggetto tramite ID
         return true;
     }

@@ -1,29 +1,22 @@
 package is.interpreter;
 
-import is.command.CommandHandler;
-import is.shapes.view.GraphicObjectLogger;
 import is.shapes.view.GraphicObjectPanel;
+import is.command.CommandHandler;
 
 public class Context {
     private final GraphicObjectPanel panel;
-    private final GraphicObjectLogger logger;
-    private final CommandHandler commandHandler; 
+    private final CommandHandler handler;
 
-    public Context(GraphicObjectPanel panel, GraphicObjectLogger logger, CommandHandler commandHandler) {
+    public Context(GraphicObjectPanel panel, CommandHandler handler) {
         this.panel = panel;
-        this.logger = logger;
-        this.commandHandler = commandHandler; 
+        this.handler = handler;
     }
 
     public GraphicObjectPanel getPanel() {
         return panel;
     }
 
-    public GraphicObjectLogger getLogger() {
-        return logger;
-    }
-
-    public CommandHandler getCommandHandler() { 
-        return commandHandler;
+    public CommandHandler getHandler() {
+        return handler;
     }
 }

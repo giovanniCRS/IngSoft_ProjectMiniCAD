@@ -20,6 +20,7 @@ public class ListCommand implements Command {
 
     @Override
     public boolean undoIt() {
+        System.out.printf("Errore: Impossibile annullare la stampa su terminale di '%s'. L'operazione è irreversibile.%n", target);
         return false; // List non è reversibile
     }
 }

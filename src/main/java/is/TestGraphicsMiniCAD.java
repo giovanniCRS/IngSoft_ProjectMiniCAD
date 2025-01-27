@@ -11,6 +11,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.Box;
@@ -106,11 +107,11 @@ public class TestGraphicsMiniCAD {
         JMenu newMenu = new JMenu("CREA");
         JMenuItem newCircle = new JMenuItem("CERCHIO:           new circle <radius> <X> <Y>");
         JMenuItem newRectangle = new JMenuItem("RETTANGOLO:  new rectangle <width> <height> <X> <Y>");
-        JMenuItem newImage = new JMenuItem("IMMAGINE:          new img \"src/main/java/is/shapes/model/NyaNya.gif\" <X> <Y>");
+        JMenuItem newImage = new JMenuItem("IMMAGINE:          new img \"src/is/shapes/model/NyaNya.gif\" <X> <Y>");
 
         newCircle.addActionListener(evt -> commandInput.setText("new circle <radius> <X> <Y>"));
         newRectangle.addActionListener(evt -> commandInput.setText("new rectangle <width> <height> <X> <Y>"));
-        newImage.addActionListener(evt -> commandInput.setText("new img \"src/main/java/is/shapes/model/NyaNya.gif\" <X> <Y>"));
+        newImage.addActionListener(evt -> commandInput.setText("new img \"src/is/shapes/model/NyaNya.gif\" <X> <Y>"));
 
         newMenu.add(newCircle);
         newMenu.add(newRectangle);
@@ -246,6 +247,11 @@ public class TestGraphicsMiniCAD {
         toolbar.add(Box.createHorizontalGlue());
         toolbar.add(commandsButton); 
 
+        // Pulsante Informazioni (con icona "i")
+        JButton infoButton = new JButton("ℹ Info");
+        infoButton.addActionListener(evt -> showInfoDialog());
+        toolbar.add(infoButton);
+
         // Layout della finestra principale
         f.add(toolbar, BorderLayout.NORTH);
         f.add(new JScrollPane(gpanel), BorderLayout.CENTER);
@@ -255,4 +261,51 @@ public class TestGraphicsMiniCAD {
         f.pack();
         f.setVisible(true);
     }
+
+    private static void showInfoDialog() {
+            String infoMessage = """
+                Benvenuto in MiniCAD!
+                Ecco alcune regole per utilizzare l'app:
+
+                - Clicca su "Comandi" per avere una visione completa di tutti i comandi da inserire nella barra di testo in basso, che sono supportati dall'app!
+                - Usa la griglia spuntando la casella apposita nella barra degli strumenti, l'utilizzo sarà più intuitivo.
+                - Se il bianco ti dà fastidio alla vista, spunta la casella apposita nella barra degli strumenti per passare alla modalità scura.
+
+                [ATTENZIONE: In ogni comando consigliato che presenta qualcosa tra "<" e ">",
+                                           è necessario sostituire tutto il valore all'interno, compresi i due 
+                                           simboli appena citati (servono solo da guida all'inserimento).
+                                           Es. <X> va sostituito con 350;
+                                                   <width> va sostituito con 75;
+                                                   <factor> va sostituito con 3 ,oppure con 0,5 ecc.. . 
+                ]
+
+                - Usa il comando "new" per creare oggetti.
+                
+                - Posiziona oggetti in un punto (X,Y) preciso con "mv";
+                - Sposta oggetti lungo gli assi con "mvoff".
+
+                - Ingrandisci o rimpicciolisci oggetti con "scale" di un certo factor (fattore moltiplicativo).
+
+                - Altri comandi:
+                - "ls" (visualizza oggetti)
+                - "grp" (crea un gruppo di oggetti)
+                - "ungrp" (sciogli un gruppo di oggetti)
+                - "area" (calcola l'area di uno o più oggetti)
+                - "perimeter" (calcola perimetro di uno o più oggetti)
+                - "del" (elimina un oggetto)
+
+                - Puoi annullare e ripetere azioni con i pulsanti Undo/Redo.
+
+
+                - OGNI COMANDO CHE SUPPORTA GLI ID, VALE SIA PER OGGETTI CHE PER GRUPPI.
+
+                Suggerimenti:
+                - X orizzontale e Y verticale. Per spostare oggetti/gruppi verso sopra oppure verso sinistra, usa valori negativi
+                - Usa "ls all" per visualizzare tutti gli oggetti presenti nel pannello.
+                - Specifica un percorso immagine valido per il comando "new img".
+
+            """;
+            JOptionPane.showMessageDialog(null, infoMessage, "Informazioni sull'App", JOptionPane.INFORMATION_MESSAGE);
+        }
+
 }

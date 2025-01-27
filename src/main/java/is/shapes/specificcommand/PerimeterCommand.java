@@ -15,12 +15,13 @@ public class PerimeterCommand implements Command {
     @Override
     public boolean doIt() {
         double perimeter = panel.calculatePerimeter(target);
-        System.out.println("Perimetro totale per il target '" + target + "': " + perimeter);
+        System.out.printf("[Perimeter] richiesto per '%s': %s.%n", target, perimeter);
     return true;
     }
 
     @Override
     public boolean undoIt() {
+        System.out.printf("Errore: Impossibile annullare la stampa su terminale del perimetro richiesto per '%s'. L'operazione è irreversibile.%n", target);
         return false; // Perimeter non è reversibile
     }
 }

@@ -211,7 +211,7 @@ public class GraphicObjectPanel extends JComponent implements GraphicObjectListe
 		}
 	
 		if (!trovato) {
-			System.out.println("- Nessun oggetto trovato per la richiesta: " + target);
+			System.out.println("- Nessun oggetto " + target + " trovato. ");
 		}
 	}
 	

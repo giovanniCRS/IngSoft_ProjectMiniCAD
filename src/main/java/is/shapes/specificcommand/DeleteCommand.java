@@ -46,12 +46,7 @@ public class DeleteCommand implements Command {
         // Rimuove il gruppo stesso dal pannello
         panel.remove(targetId);
         removedObjects.add(target);
-
-        if ( targetId.toString().length() > 4){
-            System.out.printf("Oggetti del gruppo con ID '%s' rimossi.%n", targetId);
-        }else {
-            System.out.printf("Oggetto con ID '%s' rimosso.%n", targetId);
-        }
+        System.out.printf("[%s] rimosso con ID: '%s'.%n", target.getType(), targetId);
         return true;
     }
 
@@ -65,12 +60,7 @@ public class DeleteCommand implements Command {
             }
         }
         removedObjects.clear(); // Pulisce la lista dopo l'annullamento
-
-        if ( targetId.toString().length() > 4){
-            System.out.printf("Oggetti del gruppo con ID '%s' ripristinati.%n", targetId);
-        }else {
-            System.out.printf("Oggetto con ID '%s' ripristinato.%n", targetId);
-        }
+        System.out.printf("[%s] creato con ID: '%s'.%n", target.getType(), targetId);
         
         return true;
     }
