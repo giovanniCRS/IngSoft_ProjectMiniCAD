@@ -19,6 +19,10 @@ public class ImageObjectView implements GraphicObjectView {
 		int h = (int) (dim.getHeight());
 		int x = (int) (position.getX()) - w / 2;
 		int y = (int) (position.getY()) - h / 2;
+		
+		// Disegno contorno dell'immagine con il colore selezionato
+        applyColor(g, go);
+        g.drawRect(x, y, w, h);
 
 		g.drawImage(image, x, y, w, h, null);
 

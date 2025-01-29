@@ -3,7 +3,7 @@ package is.shapes.view;
 import is.shapes.model.GraphicObject;
 import is.shapes.model.GroupObject;
 
-import java.awt.Color;
+//import java.awt.Color;
 import java.awt.Graphics2D;
 
 public class GroupObjectView implements GraphicObjectView {
@@ -13,9 +13,9 @@ public class GroupObjectView implements GraphicObjectView {
         if (!(go instanceof GroupObject)) {
             throw new IllegalArgumentException("L'oggetto non è un GroupObject");
         }
-
+        
+        /*
         GroupObject group = (GroupObject) go;
-
         Color groupColor = group.getGroupColor();
         g2D.setColor(groupColor);
 
@@ -37,5 +37,6 @@ public class GroupObjectView implements GraphicObjectView {
             }
         }
         g2D.setColor(Color.black);
+        */
     }
 }

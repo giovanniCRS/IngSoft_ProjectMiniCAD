@@ -7,6 +7,7 @@ import is.shapes.model.GraphicObjectListener;
 import is.shapes.model.GroupObject;
 import is.shapes.model.ImageObject;
 import is.shapes.model.RectangleObject;
+import is.shapes.specificdecorator.ColorDecorator;
 import is.shapes.specificstrategy.LightTheme;
 import is.strategy.ThemeStrategy;
 
@@ -15,6 +16,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -465,10 +467,21 @@ public class GraphicObjectPanel extends JComponent implements GraphicObjectListe
 
         // Disegna oggetti
         for (GraphicObject go : objects) {
-            g2.setColor(theme.getShapeColor());
-            GraphicObjectView view = GraphicObjectViewFactory.FACTORY.createView(go);
-            view.drawGraphicObject(go, g2);
-        }
+			GraphicObjectView view = GraphicObjectViewFactory.FACTORY.createView(go);
+			if (view != null) {
+				// Avvolgi la vista con il decorator per gestire il colore del tema
+				ColorDecorator themedView = new ColorDecorator(view, theme);
+				themedView.drawGraphicObject(go, g2);
+			}
+		}
     }
+
+	public List<GraphicObject> getAllObjects() {
+		return new ArrayList<>(objects);
+	}
+
+	public Color getBorderColor() {
+		return theme.getShapeColor(); // Usa il colore della modalità attuale
+	}
 
 } 

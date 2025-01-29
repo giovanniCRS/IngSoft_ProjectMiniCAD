@@ -1,27 +1,28 @@
 package is.shapes.model;
 
-import java.awt.Color;
+//import java.awt.Color;import java.util.Random;
 import java.awt.Dimension;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+
 
 public class GroupObject extends AbstractGraphicObject {
 
     private final List<GraphicObject> members;
-    private final Color groupColor; // Colore associato al gruppo
+    //private final Color groupColor; // Colore associato al gruppo
 
     public GroupObject(List<GraphicObject> objects) {
         if (objects == null || objects.isEmpty()) {
             throw new IllegalArgumentException("Il gruppo deve contenere almeno un oggetto");
         }
         this.members = new ArrayList<>(objects);
-        this.groupColor = generateRandomColor();
+        //this.groupColor = generateRandomColor();
     }
 
-     public Color getGroupColor() {
+    /* 
+    public Color getGroupColor() {
         return groupColor;
     }
 
@@ -32,6 +33,7 @@ public class GroupObject extends AbstractGraphicObject {
         float brightness = 0.7f + random.nextFloat() * 0.3f; // Luminosità alta: tra 0.7 e 1.0
         return Color.getHSBColor(hue, saturation, brightness);
     }
+    */
 
     @Override
     public void moveTo(Point2D p) {

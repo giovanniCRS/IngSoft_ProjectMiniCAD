@@ -1,14 +1,21 @@
 package is;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Window;
+import java.util.Map;
+
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -229,6 +236,44 @@ public class TestGraphicsMiniCAD {
         perimeterMenu.add(perimeterRectangle);
         perimeterMenu.add(perimeterImage);
 
+        // Menu per "color"
+        JMenu colorMenu = new JMenu("COLORE");
+        JMenuItem colorItem = new JMenuItem("Seleziona colore...");
+
+        colorItem.addActionListener(evt -> {
+            JPanel colorPanel = new JPanel(new FlowLayout());
+            colorPanel.add(new JLabel("Scegli colore:"));
+            
+            JComboBox<String> colorDropdown = new JComboBox<>(COLOR_PALETTE.keySet().toArray(new String[0]));
+            colorPanel.add(colorDropdown);
+            
+            JButton applyColorButton = new JButton("Applica");
+            applyColorButton.addActionListener(e -> {
+                String selectedColorName = (String) colorDropdown.getSelectedItem();
+                if (selectedColorName != null) {
+                    // Imposta il comando nel campo di testo
+                    commandInput.setText("color <id|type|all> " + selectedColorName.toLowerCase());
+                }
+                // Chiude il dialogo
+                Window window = SwingUtilities.getWindowAncestor(colorPanel);
+                if (window != null) {
+                    window.dispose();
+                }
+            });
+
+            colorPanel.add(applyColorButton);
+
+            JOptionPane.showOptionDialog(null, colorPanel, "Seleziona colore", 
+                JOptionPane.DEFAULT_OPTION, 
+                JOptionPane.PLAIN_MESSAGE, 
+                null, 
+                new Object[]{"Annulla"}, 
+                "Annulla"
+            );
+        });
+
+        colorMenu.add(colorItem);
+
         // Aggiunta al menu
         commandsMenu.add(newMenu);
         commandsMenu.add(moveMenu);
@@ -240,6 +285,7 @@ public class TestGraphicsMiniCAD {
         commandsMenu.add(ungroupMenu);
         commandsMenu.add(areaMenu);
         commandsMenu.add(perimeterMenu);
+        commandsMenu.add(colorMenu);
 
         commandsButton.addActionListener(evt -> commandsMenu.show(commandsButton, commandsButton.getWidth() - commandsMenu.getPreferredSize().width, commandsButton.getHeight()));
 
@@ -262,6 +308,7 @@ public class TestGraphicsMiniCAD {
         f.setVisible(true);
     }
 
+    // info
     private static void showInfoDialog() {
             String infoMessage = """
                 Benvenuto in MiniCAD!
@@ -306,6 +353,17 @@ public class TestGraphicsMiniCAD {
 
             """;
             JOptionPane.showMessageDialog(null, infoMessage, "Informazioni sull'App", JOptionPane.INFORMATION_MESSAGE);
-        }
+    }
+
+    // Palette dei colori disponibili
+    private static final Map<String, Color> COLOR_PALETTE = Map.of(
+        "red", Color.RED,
+        "orange", new Color(255, 165, 0),
+        "yellow", Color.YELLOW,
+        "green", Color.GREEN,
+        "blue", Color.BLUE,
+        "indigo", new Color(75, 0, 130),
+        "violet", new Color(138, 43, 226)
+    );
 
 }

@@ -40,7 +40,7 @@ public class UngroupCommand implements Command {
         // Ripristina il gruppo nel pannello se non è presente
         if (panel.getObjectById(groupId) != group) {
             panel.add(groupId, group);
-            System.out.printf("[Gruppo] sciolto con ID: %s.", groupId);
+            System.out.printf("[Gruppo] sciolto con ID: %s.%n", groupId);
         }
     
         // Rimuovi il gruppo dal pannello
@@ -57,7 +57,7 @@ public class UngroupCommand implements Command {
             panel.add(id, obj);       // Aggiungi l'oggetto al pannello
         }
     
-        System.out.printf("[Gruppo] sciolto con ID: %s.", groupId);
+        System.out.printf("[Gruppo] sciolto con ID: %s.%n", groupId);
         return true;
     }
 
@@ -79,7 +79,7 @@ public class UngroupCommand implements Command {
         // Ripristina il gruppo nel pannello
         if (panel.getObjectById(groupId) == null) {
             panel.add(groupId, group);
-            System.out.printf("[Gruppo] formato con ID %s.", groupId);
+            System.out.printf("[Gruppo] formato con ID %s.%n", groupId);
             return true;
         } else {
             System.err.printf("Errore: impossibile ripristinare il gruppo, ID %s già esistente.%n", groupId);

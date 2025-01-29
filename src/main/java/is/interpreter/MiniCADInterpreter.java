@@ -59,6 +59,8 @@ public class MiniCADInterpreter {
                 return new AreaExpression(tokenizer);
             case "perimeter":
                 return new PerimeterExpression(tokenizer);
+            case "color":
+                return new ColorExpression(tokenizer);
             default:
                 throw new Exception("Comando '" + comando + "' non riconosciuto");
         }
