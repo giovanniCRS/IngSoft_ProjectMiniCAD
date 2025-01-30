@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 
 import is.decorator.GraphicObjectViewDecorator;
 import is.shapes.model.GraphicObject;
+import is.shapes.specificstrategy.DarkTheme;
 import is.shapes.view.GraphicObjectView;
 import is.strategy.ThemeStrategy;
 
@@ -18,15 +19,22 @@ public class ColorDecorator extends GraphicObjectViewDecorator{
     
         @Override
         public void drawGraphicObject(GraphicObject go, Graphics2D g) {
+            Color objectColor = go.getColor();
+            if (objectColor == null) {
+                objectColor = Color.BLACK; // Colore di default se non è stato impostato
+            }
+
+            // Se siamo in modalità scura, trasformiamo il nero in bianco
+            if (theme instanceof DarkTheme && objectColor.equals(Color.BLACK)) {
+                objectColor = Color.WHITE;
+            }
+
             Color originalColor = g.getColor();
-            
-            // Usa il colore dell'oggetto se è stato impostato, altrimenti usa il colore del tema
-            g.setColor(go.getColor() != null ? go.getColor() : theme.getShapeColor());
-            
-            // Disegna l'oggetto grafico utilizzando la vista decorata
+            g.setColor(objectColor);
+
+            // Disegna l'oggetto con il colore corretto
             decoratedView.drawGraphicObject(go, g);
 
-            // Ripristina il colore originale
-            g.setColor(originalColor);
+            g.setColor(originalColor); // Ripristina il colore originale
         }
 }

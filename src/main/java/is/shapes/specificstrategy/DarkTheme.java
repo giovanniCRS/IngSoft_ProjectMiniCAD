@@ -7,12 +7,12 @@ import is.strategy.ThemeStrategy;
 public class DarkTheme implements ThemeStrategy {
     @Override
     public Color getBackgroundColor() {
-        return new Color(30, 30, 30); // Grigio scuro
+        return new Color(30, 30, 30);
     }
 
     @Override
     public Color getGridColor() {
-        return new Color(150, 50, 50);
+        return new Color(50, 50, 50);
     }
 
     @Override

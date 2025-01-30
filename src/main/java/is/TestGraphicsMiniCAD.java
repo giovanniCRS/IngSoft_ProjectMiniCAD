@@ -252,7 +252,7 @@ public class TestGraphicsMiniCAD {
                 String selectedColorName = (String) colorDropdown.getSelectedItem();
                 if (selectedColorName != null) {
                     // Imposta il comando nel campo di testo
-                    commandInput.setText("color <id|type|all> " + selectedColorName.toLowerCase());
+                    commandInput.setText("color <id | tipo | all> " + selectedColorName.toLowerCase());
                 }
                 // Chiude il dialogo
                 Window window = SwingUtilities.getWindowAncestor(colorPanel);
@@ -311,18 +311,17 @@ public class TestGraphicsMiniCAD {
     // info
     private static void showInfoDialog() {
             String infoMessage = """
-                Benvenuto in MiniCAD!
-                Ecco alcune regole per utilizzare l'app:
+                Benvenuto in MiniCAD! Ecco alcune regole per utilizzare l'app:
 
                 - Clicca su "Comandi" per avere una visione completa di tutti i comandi da inserire nella barra di testo in basso, che sono supportati dall'app!
                 - Usa la griglia spuntando la casella apposita nella barra degli strumenti, l'utilizzo sarà più intuitivo.
-                - Se il bianco ti dà fastidio alla vista, spunta la casella apposita nella barra degli strumenti per passare alla modalità scura.
+                - Se lo sfondo bianco ti dà fastidio alla vista, spunta la casella apposita nella barra degli strumenti per passare alla modalità scura.
 
                 [ATTENZIONE: In ogni comando consigliato che presenta qualcosa tra "<" e ">",
-                                           è necessario sostituire tutto il valore all'interno, compresi i due 
-                                           simboli appena citati (servono solo da guida all'inserimento).
+                                           è necessario sostituire tutto il valore all'interno, compresi i due simboli appena citati (servono solo da guida all'inserimento).
                                            Es. <X> va sostituito con 350;
                                                    <width> va sostituito con 75;
+                                                   <id | tipo | all> va sostituito con J450, oppure con circle, rectangle o image, oppure con all;
                                                    <factor> va sostituito con 3 ,oppure con 0,5 ecc.. . 
                 ]
 
@@ -340,6 +339,7 @@ public class TestGraphicsMiniCAD {
                 - "area" (calcola l'area di uno o più oggetti)
                 - "perimeter" (calcola perimetro di uno o più oggetti)
                 - "del" (elimina un oggetto)
+                - "color" (colora un oggetto o un gruppo)
 
                 - Puoi annullare e ripetere azioni con i pulsanti Undo/Redo.
 

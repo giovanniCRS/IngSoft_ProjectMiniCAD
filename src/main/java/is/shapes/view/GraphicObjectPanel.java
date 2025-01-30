@@ -476,12 +476,33 @@ public class GraphicObjectPanel extends JComponent implements GraphicObjectListe
 		}
     }
 
-	public List<GraphicObject> getAllObjects() {
-		return new ArrayList<>(objects);
-	}
-
 	public Color getBorderColor() {
 		return theme.getShapeColor(); // Usa il colore della modalità attuale
+	}
+
+	public List<GraphicObject> getAllObjects() {
+		List<GraphicObject> allObjects = new ArrayList<>();
+		for (GraphicObject go : objects) {
+			if (go instanceof GroupObject) {
+				allObjects.addAll(expandGroup((GroupObject) go)); // Espande i membri del gruppo
+			} else {
+				allObjects.add(go);
+			}
+		}
+		return allObjects;
+	}
+	
+	// Metodo ricorsivo per ottenere tutti i membri di un gruppo
+	private List<GraphicObject> expandGroup(GroupObject group) {
+		List<GraphicObject> members = new ArrayList<>();
+		for (GraphicObject go : group.getMembers()) {
+			if (go instanceof GroupObject) {
+				members.addAll(expandGroup((GroupObject) go)); // Se è un gruppo annidato, espande anche lui
+			} else {
+				members.add(go);
+			}
+		}
+		return members;
 	}
 
 } 

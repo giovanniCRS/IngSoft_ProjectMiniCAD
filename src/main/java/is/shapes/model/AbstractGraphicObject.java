@@ -37,6 +37,7 @@ public abstract class AbstractGraphicObject implements GraphicObject, Cloneable 
 		try {
 			AbstractGraphicObject go = (AbstractGraphicObject) super.clone();
 			go.listeners = new LinkedList<>();
+			go.color = color;
 			return go;
 		} catch (CloneNotSupportedException e) {
 			throw new Error(e);
