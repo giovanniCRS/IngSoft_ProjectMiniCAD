@@ -114,11 +114,11 @@ public class TestGraphicsMiniCAD {
         JMenu newMenu = new JMenu("CREA");
         JMenuItem newCircle = new JMenuItem("CERCHIO:           new circle <radius> <X> <Y>");
         JMenuItem newRectangle = new JMenuItem("RETTANGOLO:  new rectangle <width> <height> <X> <Y>");
-        JMenuItem newImage = new JMenuItem("IMMAGINE:          new img \"src/is/shapes/model/NyaNya.gif\" <X> <Y>");
+        JMenuItem newImage = new JMenuItem("IMMAGINE:          new img \"src/main/java/is/shapes/model/NyaNya.gif\" <X> <Y>");
 
         newCircle.addActionListener(evt -> commandInput.setText("new circle <radius> <X> <Y>"));
         newRectangle.addActionListener(evt -> commandInput.setText("new rectangle <width> <height> <X> <Y>"));
-        newImage.addActionListener(evt -> commandInput.setText("new img \"src/is/shapes/model/NyaNya.gif\" <X> <Y>"));
+        newImage.addActionListener(evt -> commandInput.setText("new img \"src/main/java/is/shapes/model/NyaNya.gif\" <X> <Y>"));
 
         newMenu.add(newCircle);
         newMenu.add(newRectangle);
